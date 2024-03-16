@@ -11,13 +11,16 @@ import ErrorHandler from "../utils/errorHandler.js";
 //     })
 // });
 
-export const getProducts= catchAsyncErrors( async(req, res)=>{
+export const getProducts= catchAsyncErrors( async(req, res,next)=>{
     const resPerPage= 4
     const apifilters= new APIFilters(Product,req.query).search().filters();
     
     
     let products= await apifilters.query;
     let filteredProductscount=products.length;
+
+    
+
     apifilters.pagination(resPerPage);
     products=await apifilters.query.clone();
     res.status(200).json({
