@@ -3,8 +3,10 @@ import Footer from "./components/layout/Footer";
 import Header from "./components/layout/Header";
 import Home from "./components/Home.jsx";
 import {Toaster} from 'react-hot-toast';
+import Login from "./components/auth/Login.jsx";
 import "./App.css"
 import Productdetails from "./components/product/Productdetails.jsx";
+import Register from "./components/auth/Register.jsx";
 function App() {
   return (
    < Router>
@@ -15,6 +17,8 @@ function App() {
         <Routes>
         <Route path="/" element={<Home/>}></Route>
         <Route path="/product/:id" element={<Productdetails/>}></Route>
+        <Route path ="/login"  element= {<Login/>} />
+        <Route path ="/register"  element= {<Register/>} />
 
         </Routes>
      </div>

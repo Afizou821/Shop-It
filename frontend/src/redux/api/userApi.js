@@ -1,0 +1,31 @@
+import {createApi,fetchBaseQuery} from '@reduxjs/toolkit/query/react'
+import { setIsAuthenticated ,setUser} from '../features/userSlice';
+export const userApi= createApi({
+    reducerPath:'userApi',//在全局的redux中注册一个名为product的节点，用于存放数据
+    baseQuery: fetchBaseQuery({
+        baseUrl:"/api/v1"
+    }),
+    endpoints:(builder)=>({
+       getMe :builder.query({
+           
+            query:()=>`/me`,
+            transformResponse:(result)=>result.user,
+            async  onQueryStarted(arg,{dispatch,queryFulfilled}){
+                try{
+                       const {data}= await  queryFulfilled;
+                       dispatch(setUser(data))
+                       dispatch(setIsAuthenticated(true))
+
+                }catch(error){
+                        console.log(error)
+                }
+            }
+
+   
+        }),
+        
+        
+    })
+})
+
+export const {useGetMeQuery} = userApi;
