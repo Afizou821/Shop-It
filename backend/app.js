@@ -17,7 +17,8 @@ process.on('uncaughtException',(err)=>{
 
 //connection a la base de donnée
 connectDatabase();
-app.use(express.json());
+//limit 10mb pour le coudinary
+app.use(express.json({limit: "10mb" }));
 app.use(cookieParser());
 //import des routes
 
