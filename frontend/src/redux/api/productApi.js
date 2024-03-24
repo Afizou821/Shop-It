@@ -1,4 +1,4 @@
-import React from 'react'
+
 import {createApi,fetchBaseQuery} from '@reduxjs/toolkit/query/react'
 export const productApi= createApi({
     reducerPath:'product',//在全局的redux中注册一个名为product的节点，用于存放数据

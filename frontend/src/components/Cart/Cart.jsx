@@ -1,11 +1,12 @@
 import React from 'react'
 import MetaData from '../layout/MetaData'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { removeCartItem, setCartItem } from '../../redux/features/cartSlice'
 
 const Cart = () => {
     const dispatch=useDispatch()
+    const navigate=useNavigate()
     const {cartItems}=useSelector(state=>state.cart);
     const decreaseQty=(item,quantity)=>{
         const newQty= quantity-1;
@@ -35,6 +36,9 @@ const Cart = () => {
       //pour le supprimer du panier
       const removeCartItemHandler=(id)=>{
         dispatch(removeCartItem(id))
+    }
+    const checkoutHandler=()=>{
+        navigate('/shipping')
     }
   return (
     <>
@@ -96,10 +100,13 @@ const Cart = () => {
     <div id="order_summary">
       <h4>Order Summary</h4>
       <hr />
-      <p>Subtotal: <span className="order-summary-values">8 (Units)</span></p>
-      <p>Est. total: <span className="order-summary-values">$1499.97</span></p>
+      <p>Units: <span className="order-summary-values">{
+        cartItems.reduce((acc,item)=>acc+item?.quantity,0)
+      }
+       {" "} (Units)</span></p>
+      <p>Est. total: <span className="order-summary-values">$ {        cartItems.reduce((acc,item)=>acc+item?.quantity*item?.price,0).toFixed(2)}</span></p>
       <hr />
-      <button id="checkout_btn" className="btn btn-primary w-100">
+      <button id="checkout_btn" className="btn btn-primary w-100" onClick={checkoutHandler}>
         Check out
       </button>
     </div>

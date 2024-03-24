@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import toast from "react-hot-toast";
+
 
 const initialState={
     //verifier s'il ya des element dans notre backstorage
    cartItems:localStorage.getItem( "cartItems") ? JSON.parse( localStorage.getItem("cartItems")) : [],
+   shippingInfo:localStorage.getItem( "shippingInfo") ? JSON.parse( localStorage.getItem("shippingInfo")) : {},
 }
 
 export const cartSlice = createSlice({
@@ -34,11 +35,18 @@ export const cartSlice = createSlice({
             (i) => i.product !== action.payload
         );
         localStorage.setItem("cartItems",JSON.stringify(state.cartItems))
-       }
+       },
+       saveShippingInfo:(state, action)=>{
+
+        state.shippingInfo=action.payload
+        console.log(state.shippingInfo)
+        localStorage.setItem("shippingInfo",JSON.stringify(state.shippingInfo))
+       },
+
 
     }
 })
 
 export default cartSlice.reducer;
 
-export const {setCartItem,removeCartItem}=cartSlice.actions;
+export const {setCartItem,removeCartItem,saveShippingInfo}=cartSlice.actions;
