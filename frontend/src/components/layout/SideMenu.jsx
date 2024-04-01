@@ -1,8 +1,8 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 
-const SideMenu = () => {
-    const menuItems=[
+const SideMenu = ({menuItems}) => {
+    /*const menuItems=[
         {
             name:"profile",
             url:"/me/profile",
@@ -27,7 +27,7 @@ const SideMenu = () => {
             icon:"fas fa-lock",
 
         },
-    ];
+    ];*/
     const location=useLocation()
     const [activeMenItem, setActiveMenuItem] = React.useState(location.pathname);
 

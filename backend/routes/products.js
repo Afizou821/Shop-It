@@ -1,5 +1,5 @@
 import express from "express";
-import {deleteProduct,updateProduct, getProductDetails, getProducts, newProduct, createProductReview, getAllReview, deleteProductReview } from "../controllers/productControlles.js";
+import {deleteProduct,updateProduct, getProductDetails, getProducts, newProduct, createProductReview, getAllReview, deleteProductReview, canUserReview } from "../controllers/productControlles.js";
 import { authorizeRoles, isAuthenticatedUser } from "../middlewares/auth.js";
 const router= express.Router();
 //afficher les produits
@@ -20,5 +20,7 @@ router.route("/reviews").put(isAuthenticatedUser,createProductReview);
 router.route("/getAllReviews/:id").get(isAuthenticatedUser, getAllReview);
 
 router.route("/admin/reviews").delete(isAuthenticatedUser,authorizeRoles("admin"),deleteProductReview);
+
+router.route("/can_review").get(isAuthenticatedUser,canUserReview);
 
 export default router;

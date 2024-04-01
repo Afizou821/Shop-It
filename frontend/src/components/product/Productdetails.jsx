@@ -4,9 +4,12 @@ import { useParams } from 'react-router-dom';
 import StarRatings from  'react-star-ratings';
 import Loader from '../././layout/Loader';
 import toast from 'react-hot-toast';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setCartItem } from '../../redux/features/cartSlice';
 import MetaData from '../layout/MetaData';
+import NewReview from '../reviews/NewReview';
+import ListReviews from '../reviews/ListReviews';
+
 
 const Productdetails = () => {
 
@@ -17,7 +20,8 @@ const Productdetails = () => {
     const [activeImg,setActiveImg]=useState('');
     const {data,isLoading,error,isError}=useGetProductDetailsQuery(params?.id );
     const product =data?.product;
-
+    const {isAuthenticated}=useSelector(state=> state.auth)
+  console.log(isAuthenticated)
     const decreaseQty=()=>{
       const count= document.querySelector(".count");
       if(count.valueAsNumber<=1) return
@@ -145,12 +149,19 @@ const Productdetails = () => {
         </p>
         <hr />
         <p id="product_seller mb-3">Sold by: <strong>{product?.seller}</strong></p>
-
-        <div className="alert alert-danger my-5" type="alert">
-          Login to post your review.
-        </div>
+          {
+            isAuthenticated ===true ? (<NewReview  productId={product?._id}/>):
+            (<div className="alert alert-danger my-5" type="alert">
+            Login to post your review.
+            </div>)
+          }
+       
       </div>
     </div>
+    {
+      product?.reviews?.length >0 && <ListReviews reviews={product?.reviews} />
+      
+    }
     </>
   )
 }

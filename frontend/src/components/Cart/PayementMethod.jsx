@@ -55,9 +55,7 @@ const PayementMethod = () => {
     useEffect(()=>{
       if(checkoutData){
           window.location.href=checkoutData?.url;
-          console.log("-----");
-          console.log(checkoutData);
-          console.log("-----");
+          
       }
       if(checkoutError){
         toast.error(checkoutError?.data?.message)
@@ -71,7 +69,7 @@ const PayementMethod = () => {
             ) ;     
          }
          if(isSuccess){
-            navigate("/");
+            navigate("/me/orders?order_success=true");
          }
     } ,[isSuccess,error])
   return (

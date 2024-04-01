@@ -138,3 +138,100 @@ export const deleteOrders = catchAsyncErrors(async (req, res,next) => {
         });
 
 })
+//getSalesData
+async function getSalesData(startDate,endDate){
+    
+    const salesData = await Order.aggregate([
+        {
+            //etape 1:filtrer les resultat
+            $match:{
+                createdAt:{
+                    $gte:new Date(startDate),
+                    $lte: new Date(endDate)
+                }
+            }
+        },
+        {
+            //etape 2:grouper les donnée
+            $group:{
+                _id:{
+                    date:{
+                      $dateToString:{
+                       format:"%Y-%m-%d" ,
+                       date: "$createdAt"
+                      }  
+                    }
+                },
+                totalSales:{
+                  $sum : '$totalAmount'
+                },
+                numOrder:{
+                    $sum:1
+                }
+            }
+        }
+    ]);
+
+    //create a map to store data and num of order by data
+    const salesMap=new Map()
+    let totalSales=0
+    let totalNumOrders=0
+    salesData.forEach((entry)=>{
+        const date=entry._id.date;
+        const sales=entry.totalSales;
+        const numOrders=entry.numOrder;
+
+        salesMap.set(
+            date,
+            {sales,numOrders}
+        )
+        totalSales+=sales;
+        totalNumOrders=numOrders;
+        
+
+    });
+    //generate an array of date between start and end date
+    const datesBetween=getDateBetween(startDate,endDate)
+    //create final sales data array with 0 for dates without sales
+    const finalSalesData=datesBetween.map((date)=> ({
+        date,
+        sales:(salesMap.get(date) || {sales:0}).sales,
+        numOfOrders:(salesMap.get(date)||{numOrders:0}).numOrders
+    }));
+    
+    return {salesData:finalSalesData,totalSales,totalNumOrders};
+
+}
+function getDateBetween(startDate,endDate){
+    const dates=[];
+    let currentDate= new Date(startDate )
+
+    while(currentDate<= new Date(endDate)){
+        const formattedDate=currentDate.toISOString().split("T")[0]
+        dates.push(formattedDate)
+        currentDate.setDate(currentDate.getDate()+1)
+
+        
+    }
+    console.log(dates)
+    return dates;
+
+}
+//let sales Data => /api/v1/admin/get_sales
+export const getSales= catchAsyncErrors(async (req, res,next) => {
+
+   const startDate=new Date( req.query.startDate );
+   const endDate= new Date( req.query.endDate );
+
+   startDate.setUTCHours(0,0 ,0,0);
+   endDate.setUTCHours(23,59 ,59,999);
+   console.log(startDate,endDate)
+  const {salesData, totalSales,totalNumOrders}=await getSalesData(startDate,endDate) 
+ 
+        res.status(200).json({
+            totalSales,
+            totalNumOrders,
+            sales:salesData, 
+        });
+
+})
