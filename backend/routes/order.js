@@ -11,6 +11,6 @@ router.route("/admin/orders").get(isAuthenticatedUser,authorizeRoles("admin") , 
 router.route("/admin/orders/:id").put(isAuthenticatedUser,authorizeRoles("admin") , updateOrders);
 router.route("/admin/orders/:id").delete(isAuthenticatedUser,authorizeRoles("admin") , deleteOrders);
 router.route("/admin/get_sales").get(isAuthenticatedUser,authorizeRoles("admin") , getSales);
-console.log("hi dans routes");
+
 
 export default router

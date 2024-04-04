@@ -46,8 +46,8 @@ export const newOrder = catchAsyncErrors(async (req, res) => {
 
 //get Currentuser order details => /api/v1/me/orders
 export const myOrders = catchAsyncErrors(async (req, res) => {
-    console.log(" hi there")
-    console.log(req.user._id);
+   
+   
     const orders = await Order.find({user:req.user._id});
 
 
@@ -60,6 +60,8 @@ export const myOrders = catchAsyncErrors(async (req, res) => {
         orders,
     });
 });
+
+
 //get order details /api/v1/orders/:id
 export const getOrderDetails = catchAsyncErrors(async (req, res) => {
 
@@ -95,16 +97,21 @@ export const updateOrders = catchAsyncErrors(async (req, res,next) => {
     if(order?.orderStatus==="Delivered"){
         return next(new ErrorHandler(`Cannot Update a Delivered Order`,400));
     }
+    let productNotFound=false
 
-    // order?.orderItems?.forEach(async (item)=>{
-    //     // reduce quantity of product
-    //     const product =await Product.findById(item?.product?.toString());
-    //     if(!product){
-    //         return next(new ErrorHandler('Product not found with this ID',404));
-    //     }
-    //     product.stock =product.stock-item.quantity;
-    //     await product.save({validateBeforeSave:false});
-    // })
+   for(const item of order?.orderItems) {
+        // reduce quantity of product
+        const product =await Product.findById(item?.product?.toString());
+        if(!product){
+           productNotFound=true;
+           break;
+        }
+        product.stock =product.stock-item.quantity;
+        await product.save({validateBeforeSave:false});
+    }
+    if(productNotFound){
+        return next(new ErrorHandler('Product not found with this one or more ID',404));
+    }
     order.orderStatus=req.body.status;
     order.deliveredAt=Date.now();
     await order.save();

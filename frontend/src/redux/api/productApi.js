@@ -5,7 +5,7 @@ export const productApi= createApi({
     baseQuery: fetchBaseQuery({
         baseUrl:"/api/v1"
     }),
-    tagTypes:["Product"],
+    tagTypes:["Product","AdminProducts"],
     endpoints:(builder)=>({
         getProducts:builder.query({
             query:(params)=>({
@@ -42,7 +42,82 @@ export const productApi= createApi({
             query:(productId)=>`/can_review/?productId=${productId}`,
             providesTags:['Product']
         }),
+        getAdminProducts:builder.query({
+           
+            query:()=>`/admin/products`,
+           providesTags:["AdminProducts"]
+        }),
+        createProduct: builder.mutation({
+            //这里是提交评
+            query(body) {
+                return {
+                    method: 'POST',
+                    url: `/admin/products`,
+                    body
+                }
+            },
+            invalidatesTags: ['AdminProducts'],
+            
+        }),
+        updateProduct: builder.mutation({
+            //这里是提交评
+            query({id,body}) {
+                return {
+                    method: 'PUT',
+                    url: `/admin/products/${id}`,
+                    body
+                }
+            },
+            invalidatesTags: ["Product","AdminProducts"],
+            
+        }),
+        updloadProductImages: builder.mutation({
+            //这里是提交评
+            query({id,body}) {
+                return {
+                    method: 'PUT',
+                    url: `/admin/products/${id}/upload_images`,
+                    body
+                }
+            },
+            invalidatesTags: ["Product"],
+            
+        }),
+        deleteProductImages: builder.mutation({
+            //这里是提交评
+            query({id,body}) {
+                return {
+                    method: 'PUT',
+                    url: `/admin/products/${id}/delete_images`,
+                    body
+                }
+            },
+            invalidatesTags: ["Product"],
+            
+        }),
+        deleteProduct: builder.mutation({
+            //这里是提交评
+            query(id) {
+                return {
+                    method: 'DELETE',
+                    url: `/admin/products/${id}`,
+                    
+                }
+            },
+            invalidatesTags: ["AdminProducts"],
+            
+        }),
     })
 })
 
-export const {useGetProductsQuery,useGetProductDetailsQuery,useSubmitReviewsMutation,useCanUserReviewQuery} =productApi
+export const {useGetProductsQuery,
+    useGetProductDetailsQuery,
+    useSubmitReviewsMutation,
+    useCanUserReviewQuery,
+    useGetAdminProductsQuery,
+    useCreateProductMutation,
+    useUpdateProductMutation,
+    useUpdloadProductImagesMutation,
+    useDeleteProductImagesMutation,
+    useDeleteProductMutation
+} =productApi

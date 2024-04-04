@@ -62,6 +62,7 @@ export const loginUser =catchAsyncErrors(async(req,res,next)=>{
 
     //remove previos avatar
     if(req?.user?.avatar?.url){
+        console.log(req?.user?.avatar?.public_id)
         await delete_file(req?.user?.avatar?.public_id);
     }
 
